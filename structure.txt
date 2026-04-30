@@ -1,22 +1,16 @@
-ai-agriculture/
-│
-├── app.py
-├── config.py
-├── requirements.txt
-│
-├── services/
-│   ├── weather_service.py
-│   ├── crop_service.py
-│   ├── market_service.py
-│   ├── gemini_service.py
-│
-├── utils/
-│   ├── cache.py
-│   ├── mapping.py
-│
-├── templates/
-│   └── index.html
-│
-├── static/
-│   ├── chart.png
-│   └── style.css
+ai-crop/
+|-- data/
+|   `-- Crop_recommendation.csv
+|-- models/
+|   `-- crop_recommendation_model.pkl
+|-- scripts/
+|   |-- dataset_import.py
+|   `-- model_train.py
+|-- services/
+|   |-- __init__.py
+|   |-- crop_service.py
+|   |-- location_service.py
+|   |-- market_service.py
+|   `-- weather_data.py
+|-- pipeline.py
+`-- structure.txt

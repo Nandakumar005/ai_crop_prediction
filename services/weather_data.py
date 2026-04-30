@@ -1,10 +1,11 @@
 import os
 from pathlib import Path
+
 import requests
 from dotenv import load_dotenv
 
-project_root = Path(__file__).resolve().parents[1]
-load_dotenv(project_root / ".env")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+load_dotenv(PROJECT_ROOT / ".env")
 
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 if not WEATHER_API_KEY:
@@ -19,7 +20,7 @@ def get_weather_data(lat, lon):
         "appid": WEATHER_API_KEY,
         "units": "metric",
     }
-    response = requests.get(url, params=params)
+    response = requests.get(url, params=params, timeout=20)
     data = response.json()
 
     if response.status_code != 200:

@@ -3,27 +3,15 @@ from pathlib import Path
 import requests
 from dotenv import load_dotenv
 
-project_root = Path(__file__).resolve().parents[1]
-load_dotenv(project_root / ".env")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+load_dotenv(PROJECT_ROOT / ".env")
 
 MARKET_API_KEY = os.getenv("MARKET_API_KEY")
 if not MARKET_API_KEY:
     raise RuntimeError("MARKET_API_KEY is not set in .env")
 
+
 def get_market_price(commodity=None, state=None, district=None, market=None, limit=10):
-    """
-    Fetch market price data from data.gov.in API.
-
-    Parameters:
-    - commodity: Name of the commodity (e.g., 'Onion')
-    - state: State name
-    - district: District name
-    - market: Market name
-    - limit: Number of records to fetch (default 10)
-
-    Returns:
-    List of market price records.
-    """
     url = "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070"
     params = {
         "api-key": MARKET_API_KEY,
@@ -47,12 +35,25 @@ def get_market_price(commodity=None, state=None, district=None, market=None, lim
             f"Error fetching market price data ({response.status_code}): {data.get('message', 'Unknown error')}"
         )
 
-    # Assuming the API returns records in 'records' key
-    records = data.get("records", [])
-    return records
+    return data.get("records", [])
 
-# Example usage
-if __name__ == "__main__":
-    prices = get_market_price(commodity="Onion", limit=5)
-    for price in prices:
-        print(price)
+
+def get_best_price(commodity, state=None, district=None):
+    records = get_market_price(
+        commodity=commodity.title(),
+        state=state,
+        district=district,
+        limit=50,
+    )
+
+    prices = []
+    for record in records:
+        value = record.get("modal_price") or record.get("Modal_Price")
+        if value is None:
+            continue
+        try:
+            prices.append(float(value))
+        except (TypeError, ValueError):
+            continue
+
+    return max(prices, default=0)
