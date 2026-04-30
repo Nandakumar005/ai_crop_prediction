@@ -1,13 +1,38 @@
-import requests
 import os
-WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+from pathlib import Path
+import requests
+from dotenv import load_dotenv
 
-def get_weather_data(lat,lon):
-    url = f"http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={WEATHER_API_KEY}"
-    response = requests.get(url).json()
-    return{
-        "temperature": response['main']['temp'],
-        "humidity": response['main']['humidity'],
-        "wind_speed": response['wind']['speed'],
-        "weather_description": response['weather'][0]['description']
+project_root = Path(__file__).resolve().parents[1]
+load_dotenv(project_root / ".env")
+
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+if not WEATHER_API_KEY:
+    raise RuntimeError("WEATHER_API_KEY is not set in .env")
+
+
+def get_weather_data(lat, lon):
+    url = "http://api.openweathermap.org/data/2.5/weather"
+    params = {
+        "lat": lat,
+        "lon": lon,
+        "appid": WEATHER_API_KEY,
+        "units": "metric",
+    }
+    response = requests.get(url, params=params)
+    data = response.json()
+
+    if response.status_code != 200:
+        raise Exception(
+            f"Error fetching weather data ({response.status_code}): {data.get('message', 'Unknown error')}"
+        )
+
+    main = data.get("main", {})
+    wind = data.get("wind", {})
+    weather = data.get("weather", [{}])
+
+    return {
+        "temperature": main.get("temp"),
+        "humidity": main.get("humidity"),
+        "wind_speed": wind.get("speed"),
     }
