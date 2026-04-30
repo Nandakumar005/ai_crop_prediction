@@ -1,0 +1,22 @@
+ai-agriculture/
+│
+├── app.py
+├── config.py
+├── requirements.txt
+│
+├── services/
+│   ├── weather_service.py
+│   ├── crop_service.py
+│   ├── market_service.py
+│   ├── gemini_service.py
+│
+├── utils/
+│   ├── cache.py
+│   ├── mapping.py
+│
+├── templates/
+│   └── index.html
+│
+├── static/
+│   ├── chart.png
+│   └── style.css
