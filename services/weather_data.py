@@ -28,11 +28,10 @@ def get_weather_data(lat, lon):
         )
 
     main = data.get("main", {})
-    wind = data.get("wind", {})
-    weather = data.get("weather", [{}])
+    rain = data.get("rain", {})
 
     return {
         "temperature": main.get("temp"),
         "humidity": main.get("humidity"),
-        "wind_speed": wind.get("speed"),
+        "rainfall": rain.get("1h"),
     }
