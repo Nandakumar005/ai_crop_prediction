@@ -3,14 +3,13 @@ import json
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()
-
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GEMINI_MODEL = "gemini-2.0-flash"  
-
 def estimate_crop_values(weather, location, crops):
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
-    params = {"key": GEMINI_API_KEY}
+    load_dotenv()
+    gemini_api_key = os.getenv("GEMINI_API_KEY")
+    gemini_model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{gemini_model}:generateContent"
+    params = {"key": gemini_api_key}
     crop_lines = ", ".join(crops)
     prompt = f"""
 You are an agriculture advisor for India.
