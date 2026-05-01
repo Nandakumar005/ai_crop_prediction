@@ -103,9 +103,9 @@
     }
 
     button.secondary {
-      background: #e7efe8;
-      color: var(--brand-dark);
-      border: 1px solid #bfd2c2;
+      background: #efe8e7;
+      color: var(--danger);
+      border: 1px solid #b61b06;
     }
 
     button:disabled {
@@ -212,7 +212,7 @@
 
     <div class="layout">
       <section>
-        <h2>Farm Inputs</h2>
+        <h2>Farm Data </h2>
         <button class="secondary" id="locationBtn" type="button">Get Location</button>
 
         <label for="lat">Latitude</label>
@@ -251,7 +251,7 @@
         </div>
 
         <ul class="crop-list" id="crops"></ul>
-        <img class="chart" id="chart" alt="Crop predicted value bar chart">
+        <img class="chart" id="chart" alt="Crop estimated price bar chart">
         <div class="summary" id="summary">Run analysis to view the advisory summary.</div>
       </section>
     </div>
@@ -333,7 +333,7 @@
           item.innerHTML = `
             <div>
               <strong>${titleCase(crop.crop)}</strong>
-              <small>predicted value · ${crop.unit || "Rs/quintal"}</small>
+              <small>price estimate · ${crop.unit || "Rs/quintal"}</small>
             </div>
             <strong>Rs. ${Number(crop.estimated_value || 0).toFixed(0)}</strong>
           `;

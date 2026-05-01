@@ -27,7 +27,7 @@ Return only valid JSON in this format:
   "summary": "short farmer-friendly advice under 100 words"
 }}
 
-Estimate realistic current  values yourself. Sort crops by estimated_value from high to low.
+Estimate realistic price values depending on the place and seasons. Prefer crops with better yield and profitability for this location, and sort crops by estimated_value from high to low.
 """.strip()
 
     payload = {

@@ -1,8 +1,6 @@
 import os
 import time
-
 import matplotlib
-
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from flask import Flask, jsonify, render_template, request
@@ -36,7 +34,7 @@ def analyze():
     weather = get_weather_data(lat, lon)
     location = get_location_details(lat, lon)
     rainfall = weather["rainfall"] or 100
-    crops = predict_top_crops(
+    candidate_crops = predict_top_crops(
         n_value,
         p_value,
         k_value,
@@ -44,8 +42,9 @@ def analyze():
         weather["humidity"],
         ph_value,
         rainfall,
-    )[:5]
-    gemini_result = estimate_crop_values(weather, location, crops)
+        top_n=5,
+    )
+    gemini_result = estimate_crop_values(weather, location, candidate_crops)
     chart_url = generate_value_chart(gemini_result["crops"])
 
     result = {
@@ -65,9 +64,9 @@ def generate_value_chart(crops):
     plt.figure(figsize=(8, 4.5))
     if names and values:
         bars = plt.bar(names, values, color="green")
-        plt.ylabel("Estimated value (Rs./quintal)")
+        plt.ylabel("Estimated price (Rs./quintal)")
         plt.xlabel("Crop")
-        plt.title(" Estimated Crop Values")
+        plt.title("Top crops by estimated price")
         plt.xticks(rotation=20, ha="right")
         for bar, value in zip(bars, values):
             plt.text(

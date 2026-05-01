@@ -6,7 +6,7 @@ FEATURE_COLUMNS = ["N", "P", "K", "temperature", "humidity", "ph", "rainfall"]
 
 model = joblib.load(MODEL_PATH)
 
-def predict_top_crops(N, P, K, temp, humidity, ph, rainfall):
+def predict_top_crops(N, P, K, temp, humidity, ph, rainfall, top_n=5):
     features = pd.DataFrame(
         [[N, P, K, temp, humidity, ph, rainfall]],
         columns=FEATURE_COLUMNS,
@@ -17,4 +17,4 @@ def predict_top_crops(N, P, K, temp, humidity, ph, rainfall):
     pairs = list(zip(classes, probs))
     pairs.sort(key=lambda x: x[1], reverse=True)
 
-    return [crop for crop, _ in pairs[:5]]
+    return [crop for crop, _ in pairs[:top_n]]
