@@ -1,15 +1,11 @@
 import os
-from pathlib import Path
 
 import requests
 from dotenv import load_dotenv
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-load_dotenv(PROJECT_ROOT / ".env")
+load_dotenv()
 
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
-if not WEATHER_API_KEY:
-    raise RuntimeError("WEATHER_API_KEY is not set in .env")
 
 
 def get_weather_data(lat, lon):
@@ -22,11 +18,6 @@ def get_weather_data(lat, lon):
     }
     response = requests.get(url, params=params, timeout=20)
     data = response.json()
-
-    if response.status_code != 200:
-        raise Exception(
-            f"Error fetching weather data ({response.status_code}): {data.get('message', 'Unknown error')}"
-        )
 
     main = data.get("main", {})
     rain = data.get("rain", {})
