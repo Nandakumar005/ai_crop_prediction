@@ -230,6 +230,9 @@
         <label for="k">Potassium (K)</label>
         <input id="k" type="number" step="any" placeholder="Example: 43">
 
+        <label for="ph">pH</label>
+        <input id="ph" type="number" step="any" placeholder="Example: 6.5">
+
         <button id="analyzeBtn" type="button">Analyze</button>
         <div class="message" id="status"></div>
       </section>
@@ -288,7 +291,8 @@
         lon: document.getElementById("lon").value,
         N: document.getElementById("n").value,
         P: document.getElementById("p").value,
-        K: document.getElementById("k").value
+        K: document.getElementById("k").value,
+        ph: document.getElementById("ph").value
       };
 
       setLoading(true);
@@ -329,7 +333,7 @@
           item.innerHTML = `
             <div>
               <strong>${titleCase(crop.crop)}</strong>
-              <small>predicted value · ${crop.unit || "Rs/quantity"}</small>
+              <small>predicted value · ${crop.unit || "Rs/quintal"}</small>
             </div>
             <strong>Rs. ${Number(crop.estimated_value || 0).toFixed(0)}</strong>
           `;

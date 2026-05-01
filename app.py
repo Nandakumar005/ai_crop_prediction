@@ -31,6 +31,7 @@ def analyze():
     n_value = float(data["N"])
     p_value = float(data["P"])
     k_value = float(data["K"])
+    ph_value = float(data["ph"])
 
     weather = get_weather_data(lat, lon)
     location = get_location_details(lat, lon)
@@ -41,7 +42,7 @@ def analyze():
         k_value,
         weather["temperature"],
         weather["humidity"],
-        6.5,
+        ph_value,
         rainfall,
     )[:5]
     gemini_result = estimate_crop_values(weather, location, crops)
@@ -64,7 +65,7 @@ def generate_value_chart(crops):
     plt.figure(figsize=(8, 4.5))
     if names and values:
         bars = plt.bar(names, values, color="green")
-        plt.ylabel("Estimated value (Rs./quantity)")
+        plt.ylabel("Estimated value (Rs./quintal)")
         plt.xlabel("Crop")
         plt.title(" Estimated Crop Values")
         plt.xticks(rotation=20, ha="right")
@@ -85,7 +86,5 @@ def generate_value_chart(crops):
     plt.savefig(CHART_PATH, dpi=140)
     plt.close()
     return f"/static/chart.png?t={int(time.time())}"
-
-
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)

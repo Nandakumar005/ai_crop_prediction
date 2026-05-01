@@ -17,4 +17,4 @@ def predict_top_crops(N, P, K, temp, humidity, ph, rainfall):
     pairs = list(zip(classes, probs))
     pairs.sort(key=lambda x: x[1], reverse=True)
 
-    return [crop for crop, _ in pairs[:20]]
+    return [crop for crop, _ in pairs[:5]]
