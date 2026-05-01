@@ -207,7 +207,7 @@
   <main>
     <header>
       <h1>AI Smart Agriculture System</h1>
-      <p>Analyze soil nutrients, weather, location, crop predictions, Gemini estimates, and advisory summary.</p>
+      <p>Analyze soil nutrients, weather, location, crop predictions, and advisory summary.</p>
     </header>
 
     <div class="layout">
@@ -248,7 +248,7 @@
         </div>
 
         <ul class="crop-list" id="crops"></ul>
-        <img class="chart" id="chart" alt="Crop estimated value bar chart">
+        <img class="chart" id="chart" alt="Crop predicted value bar chart">
         <div class="summary" id="summary">Run analysis to view the advisory summary.</div>
       </section>
     </div>
@@ -329,7 +329,7 @@
           item.innerHTML = `
             <div>
               <strong>${titleCase(crop.crop)}</strong>
-              <small>estimated value · ${crop.unit || "Rs/quantity"}</small>
+              <small>predicted value · ${crop.unit || "Rs/quantity"}</small>
             </div>
             <strong>Rs. ${Number(crop.estimated_value || 0).toFixed(0)}</strong>
           `;
