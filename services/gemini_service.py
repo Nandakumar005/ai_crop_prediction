@@ -27,7 +27,8 @@ Terrain: {farm_info.get('terrain', 'Not specified')}.
 
 Top predicted crops: {crop_lines}.
 
-Based on all the above data, recommend the single best crop from the list for this farmer. Explain why it is the best choice considering the soil nutrients, weather, terrain, farm size and market conditions. Keep the advice under 150 words and farmer-friendly.
+Based on all the above data, recommend the single best crop from the list for this farmer. Explain why it is the best choice considering the soil nutrients, weather, terrain, farm size and market conditions and dont show the metrics or values in the summary also add the crop native name next to the actual name 
+like this crop(native name) based on the state and district. Keep the advice under 150 words and farmer-friendly.
 
 Return only valid JSON:
 {{
