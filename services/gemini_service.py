@@ -3,39 +3,51 @@ import json
 import requests
 from dotenv import load_dotenv
 
-def estimate_crop_values(weather, location, crops):
+
+def get_gemini_summary(weather, location, crops, soil_npk, farm_info):
     load_dotenv()
-    gemini_api_key = os.getenv("GEMINI_API_KEY")
-    gemini_model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
-    
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{gemini_model}:generateContent"
-    params = {"key": gemini_api_key}
+    api_key = os.getenv("GEMINI_API_KEY")
+    model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+    params = {"key": api_key}
+
     crop_lines = ", ".join(crops)
+
     prompt = f"""
-You are an agriculture advisor for India.
+You are an agriculture advisor for Indian farmers.
 
-Weather: temperature {weather.get('temperature')} C, humidity {weather.get('humidity')}%, rainfall {weather.get('rainfall') or 0} mm.
 Location: {location.get('district')}, {location.get('state')}.
-Predicted crops: {crop_lines}.
+Weather: temperature {weather.get('temperature')} C, humidity {weather.get('humidity')}%, rainfall {weather.get('rainfall') or 0} mm.
 
-Return only valid JSON in this format:
+Soil Nutrients: Nitrogen={soil_npk.get('N')}, Phosphorus={soil_npk.get('P')}, Potassium={soil_npk.get('K')}, pH={soil_npk.get('ph')}.
+Farm Size: {farm_info.get('farm_size', 'Not specified')} acres.
+Soil Type: {farm_info.get('soil_type', 'Not specified')}.
+Terrain: {farm_info.get('terrain', 'Not specified')}.
+
+Top predicted crops: {crop_lines}.
+
+Based on all the above data, recommend the single best crop from the list for this farmer. Explain why it is the best choice considering the soil nutrients, weather, terrain, farm size and market conditions. Keep the advice under 150 words and farmer-friendly.
+
+Return only valid JSON:
 {{
-  "crops": [
-    {{"crop": "crop name", "estimated_value": 2500, "unit": "Rs/quintal"}}
-  ],
-  "summary": "short farmer-friendly advice under 100 words"
+  "best_crop": "crop name",
+  "summary": "your advice here"
 }}
-
-Estimate realistic price values depending on the place and seasons. Prefer crops with better yield and profitability for this location, and sort crops by estimated_value from high to low.
 """.strip()
 
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {"response_mime_type": "application/json"},
     }
-    response = requests.post(url, params=params, json=payload, timeout=30)
-    data = response.json()
-    if "candidates" in data:
-        text = data["candidates"][0]["content"]["parts"][0]["text"]
-        return json.loads(text)
-    return {"crops": [{"crop": crop, "estimated_value": 0, "unit": "Rs/quintal"} for crop in crops], "summary": data.get("error", {}).get("message", "Gemini unavailable.")}
+
+    try:
+        response = requests.post(url, params=params, json=payload, timeout=30)
+        data = response.json()
+        if "candidates" in data:
+            text = data["candidates"][0]["content"]["parts"][0]["text"]
+            return json.loads(text)
+    except Exception as e:
+        print("Gemini API error:", e)
+
+    return {"best_crop": "", "summary": "Gemini is currently unavailable. Please try again later."}

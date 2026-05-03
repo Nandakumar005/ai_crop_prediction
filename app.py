@@ -6,9 +6,10 @@ import matplotlib.pyplot as plt
 from flask import Flask, jsonify, render_template, request
 
 from services.crop_service import predict_top_crops
-from services.gemini_service import estimate_crop_values
+from services.gemini_service import get_gemini_summary
 from services.location_service import get_location_details
 from services.weather_data import get_weather_data
+from services.market_service import get_live_market_data
 
 CHART_PATH = "static/chart.png"
 
@@ -26,40 +27,46 @@ def analyze():
     data = request.json
     lat = float(data["lat"])
     lon = float(data["lon"])
-    n_value = float(data["N"])
-    p_value = float(data["P"])
-    k_value = float(data["K"])
-    ph_value = float(data["ph"])
+    n = float(data["N"])
+    p = float(data["P"])
+    k = float(data["K"])
+    ph = float(data["ph"])
 
     weather = get_weather_data(lat, lon)
     location = get_location_details(lat, lon)
-    rainfall = weather["rainfall"] or 100
-    candidate_crops = predict_top_crops(
-        n_value,
-        p_value,
-        k_value,
-        weather["temperature"],
-        weather["humidity"],
-        ph_value,
-        rainfall,
-        top_n=5,
-    )
-    gemini_result = estimate_crop_values(weather, location, candidate_crops)
-    chart_url = generate_value_chart(gemini_result["crops"])
 
-    result = {
+    temp = weather["temperature"] if weather["temperature"] is not None else 25
+    hum = weather["humidity"] if weather["humidity"] is not None else 60
+    rain = weather["rainfall"] or 100
+
+    crops = predict_top_crops(n, p, k, temp, hum, ph, rain, top_n=5)
+    market = get_live_market_data(crops)
+    chart = make_chart(market)
+
+    return jsonify({
         "weather": weather,
         "location": location,
-        "crops": gemini_result["crops"],
-        "summary": gemini_result["summary"],
-        "chart_url": chart_url,
-    }
+        "crops": market,
+        "chart_url": chart,
+    })
+
+
+@app.route("/gemini_summary", methods=["POST"])
+def gemini_summary():
+    data = request.json
+    weather = data.get("weather", {})
+    location = data.get("location", {})
+    crops = data.get("crops", [])
+    soil_npk = data.get("soil_npk", {})
+    farm_info = data.get("farm_info", {})
+
+    result = get_gemini_summary(weather, location, crops, soil_npk, farm_info)
     return jsonify(result)
 
 
-def generate_value_chart(crops):
-    names = [crop["crop"].title() for crop in crops if crop.get("estimated_value")]
-    values = [crop["estimated_value"] for crop in crops if crop.get("estimated_value")]
+def make_chart(crops):
+    names = [c["crop"].title() for c in crops if c.get("estimated_value")]
+    values = [c["estimated_value"] for c in crops if c.get("estimated_value")]
 
     plt.figure(figsize=(8, 4.5))
     if names and values:
@@ -68,22 +75,20 @@ def generate_value_chart(crops):
         plt.xlabel("Crop")
         plt.title("Top crops by estimated price")
         plt.xticks(rotation=20, ha="right")
-        for bar, value in zip(bars, values):
+        for bar, val in zip(bars, values):
             plt.text(
-                bar.get_x() + bar.get_width() / 2,
-                bar.get_height(),
-                f"{value:.0f}",
-                ha="center",
-                va="bottom",
-                fontsize=9,
+                bar.get_x() + bar.get_width() / 2, bar.get_height(),
+                f"{val:.0f}", ha="center", va="bottom", fontsize=9,
             )
     else:
-        plt.text(0.5, 0.5, "No estimated values available", ha="center", va="center", fontsize=14)
+        plt.text(0.5, 0.5, "No data available", ha="center", va="center", fontsize=14)
         plt.axis("off")
 
     plt.tight_layout()
     plt.savefig(CHART_PATH, dpi=140)
     plt.close()
     return f"/static/chart.png?t={int(time.time())}"
+
+
 if __name__ == "__main__":
     app.run(debug=True)
