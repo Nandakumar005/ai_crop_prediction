@@ -1,12 +1,25 @@
+<!-- 
+  AI SMART AGRICULTURE SYSTEM
+  A website for crop recommendations
+-->
 <!doctype html>
 <html lang="en">
 
+<!-- START HEAD - stuff for the page setup -->
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AI Smart Agriculture System</title>
+  
+  <!-- get fancy font from google -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- ALL THE CSS STYLING GOES HERE -->
   <style>
+    /* 
+      set up colors and sizes
+      these are like variables we can reuse
+    */
     :root {
       --bg: #f0f4ed;
       --panel: #ffffff;
@@ -21,12 +34,14 @@
       --radius: 10px;
     }
 
+    /* remove all the default padding and margins */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
+    /* BODY STYLE - how the whole page looks */
     body {
       font-family: 'Inter', Arial, sans-serif;
       background: var(--bg);
@@ -34,28 +49,33 @@
       line-height: 1.6;
     }
 
+    /* MAIN CONTAINER - the main content area */
     main {
       width: min(1380px, calc(100% - 32px));
       margin: 28px auto;
     }
 
+    /* header at top of page */
     header {
       margin-bottom: 24px;
       text-align: center;
     }
 
+    /* the big title */
     header h1 {
       font-size: 28px;
       font-weight: 700;
       color: var(--brand);
     }
 
+    /* subtitle text under title */
     header p {
       color: var(--muted);
       font-size: 14px;
       margin-top: 4px;
     }
 
+    /* 3 columns - left for inputs, middle for results, right for AI stuff */
     .layout {
       display: grid;
       grid-template-columns: 300px 1fr 320px;
@@ -63,6 +83,7 @@
       align-items: start;
     }
 
+    /* styling for sections/boxes */
     section {
       background: var(--panel);
       border: 1px solid var(--line);
@@ -71,6 +92,7 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
     }
 
+    /* section headings */
     h2 {
       font-size: 16px;
       font-weight: 700;
@@ -81,10 +103,12 @@
       gap: 8px;
     }
 
+    /* icon next to heading */
     h2 .icon {
       font-size: 20px;
     }
 
+    /* FORM STUFF - labels for inputs */
     label {
       display: block;
       margin: 10px 0 4px;
@@ -95,6 +119,7 @@
       letter-spacing: 0.5px;
     }
 
+    /* input boxes and dropdowns */
     input,
     select {
       width: 100%;
@@ -109,6 +134,7 @@
       transition: border-color 0.2s;
     }
 
+    /* when you click in input - make it highlight */
     input:focus,
     select:focus {
       outline: none;
@@ -116,12 +142,14 @@
       box-shadow: 0 0 0 3px rgba(45, 140, 82, 0.1);
     }
 
+    /* make 2 columns for form rows */
     .row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
 
+    /* BUTTONS - all button styles */
     button {
       width: 100%;
       height: 40px;
@@ -135,45 +163,54 @@
       transition: all 0.2s;
     }
 
+    /* green button for main actions */
     .btn-primary {
       background: var(--brand);
       color: #fff;
     }
 
+    /* green button hover - change color when mouse over */
     .btn-primary:hover {
       background: var(--brand-hover);
     }
 
+    /* white button with green border */
     .btn-secondary {
       background: #fff;
       color: var(--brand);
       border: 1.5px solid var(--brand);
     }
 
+    /* white button hover */
     .btn-secondary:hover {
       background: var(--accent);
     }
 
+    /* purple button for AI */
     .btn-gemini {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: #fff;
     }
 
+    /* purple button hover */
     .btn-gemini:hover {
       opacity: 0.9;
     }
 
+    /* disable button - make it look faded */
     button:disabled {
       cursor: not-allowed;
       opacity: 0.5;
     }
 
+    /* grid for showing metrics/info cards */
     .grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
     }
 
+    /* small info cards */
     .metric {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -181,6 +218,7 @@
       background: var(--accent);
     }
 
+    /* text inside metric cards */
     .metric span {
       display: block;
       color: var(--muted);
@@ -190,10 +228,12 @@
       margin-bottom: 4px;
     }
 
+    /* big number in metric */
     .metric strong {
       font-size: 15px;
     }
 
+    /* LIST OF CROPS */
     .crop-list {
       display: grid;
       gap: 8px;
@@ -202,6 +242,7 @@
       list-style: none;
     }
 
+    /* single crop item - looks like a box */
     .crop-item {
       display: flex;
       justify-content: space-between;
@@ -212,10 +253,12 @@
       transition: background 0.15s;
     }
 
+    /* when mouse over crop - change background */
     .crop-item:hover {
       background: var(--accent);
     }
 
+    /* small text under crop name */
     .crop-item small {
       display: block;
       color: var(--muted);
@@ -223,6 +266,8 @@
       margin-top: 2px;
     }
 
+    /* CHARTS AND AI BOX */
+    /* the chart/image */
     .chart {
       width: 100%;
       margin-top: 14px;
@@ -231,6 +276,7 @@
       display: none;
     }
 
+    /* box for AI recommendation - hidden at first */
     .gemini-box {
       margin-top: 14px;
       padding: 16px;
@@ -242,6 +288,7 @@
       line-height: 1.7;
     }
 
+    /* the badge that says "best crop" */
     .gemini-box .best-crop {
       display: inline-block;
       background: linear-gradient(135deg, #667eea, #764ba2);
@@ -253,23 +300,29 @@
       margin-bottom: 10px;
     }
 
+    /* status messages and dividers */
+    /* normal status text */
     .status {
       margin-top: 10px;
       font-size: 13px;
       color: var(--muted);
     }
 
+    /* red status text for errors */
     .status.error {
       color: var(--danger);
       font-weight: 600;
     }
 
+    /* line to separate stuff */
     .divider {
       height: 1px;
       background: var(--line);
       margin: 14px 0;
     }
 
+    /* MAKE IT WORK ON DIFFERENT SCREEN SIZES */
+    /* for tablets */
     @media (max-width: 1100px) {
       .layout {
         grid-template-columns: 300px 1fr;
@@ -280,6 +333,7 @@
       }
     }
 
+    /* for phones - just one column */
     @media (max-width: 820px) {
       main {
         width: calc(100% - 24px);
@@ -296,21 +350,26 @@
   </style>
 </head>
 
+<!-- NOW THE ACTUAL PAGE CONTENT -->
 <body>
   <main>
+    <!-- TOP OF PAGE - TITLE AND DESCRIPTION -->
     <header>
       <h1>Smart Crop Recommendation System</h1>
       <p>Enter farm data to get crop predictions, live market prices, and AI-powered advice.</p>
     </header>
 
+    <!-- THIS IS THE MAIN LAYOUT - 3 COLUMNS -->
     <div class="layout">
 
-      <!-- LEFT: Input Panel -->
+      <!-- LEFT COLUMN - FORM TO INPUT FARM DATA -->
       <section>
         <h2><span class="icon"></span> Farm Data</h2>
 
+        <!-- button to get location automatically -->
         <button class="btn-secondary" id="locationBtn" type="button">Get Location</button>
 
+        <!-- latitude and longitude - user location -->
         <div class="row" style="margin-top: 6px;">
           <div>
             <label for="lat">Latitude</label>
@@ -324,6 +383,7 @@
 
         <div class="divider"></div>
 
+        <!-- nitrogen, phosphorus, potassium - soil nutrients -->
         <div class="row">
           <div>
             <label for="n">Nitrogen (N)</label>
@@ -348,9 +408,11 @@
 
         <div class="divider"></div>
 
+        <!-- how big is the farm -->
         <label for="farm_size">Farm Size (acres)</label>
         <input id="farm_size" type="number" step="any" placeholder="5">
 
+        <!-- what type of soil -->
         <label for="soil_type">Soil Type</label>
         <select id="soil_type">
           <option value="">-- Select --</option>
@@ -364,6 +426,7 @@
           <option value="Saline">Saline</option>
         </select>
 
+        <!-- what is the landscape like -->
         <label for="terrain">Terrain</label>
         <select id="terrain">
           <option value="">-- Select --</option>
@@ -375,13 +438,17 @@
           <option value="Arid / Desert">Arid / Desert</option>
         </select>
 
+        <!-- button to analyze the form -->
         <button class="btn-primary" id="analyzeBtn" type="button">Analyze</button>
+        <!-- shows error messages -->
         <div class="status" id="status"></div>
       </section>
 
-      <!-- CENTER: Results Panel -->
+      <!-- MIDDLE COLUMN - SHOWS RESULTS -->
       <section>
         <h2><span class="icon"></span> Analysis Results</h2>
+
+        <!-- weather and location info -->
         <div class="grid">
           <div class="metric">
             <span>Weather</span>
@@ -392,14 +459,22 @@
             <strong id="location">Waiting...</strong>
           </div>
         </div>
+
+        <!-- list of crops that are recommended -->
         <ul class="crop-list" id="crops"></ul>
+
+        <!-- image showing crop prices -->
         <img class="chart" id="chart" alt="Crop price chart">
       </section>
 
-      <!-- RIGHT: Gemini Panel -->
+      <!-- RIGHT COLUMN - AI STUFF -->
       <section class="gemini-section">
         <h2><span class="icon"></span>AI Analysis</h2>
+        
+        <!-- button to get AI recommendation -->
         <button class="btn-gemini" id="geminiBtn" type="button" disabled>Get AI Recommendation</button>
+        
+        <!-- where AI results show up -->
         <div class="gemini-box" id="geminiBox">
           <div class="best-crop" id="bestCrop"></div>
           <div id="summary"></div>
@@ -409,8 +484,12 @@
     </div>
   </main>
 
+  <!-- JAVASCRIPT - THE CODE THAT MAKES THINGS WORK -->
   <script>
+    // shorthand function - $ is faster to type than document.getElementById
     const $ = id => document.getElementById(id);
+
+    // get all the buttons and elements we need
     const locationBtn = $("locationBtn");
     const analyzeBtn = $("analyzeBtn");
     const geminiBtn = $("geminiBtn");
@@ -423,26 +502,34 @@
     const bestCropEl = $("bestCrop");
     const summaryEl = $("summary");
 
+    // save the data after analyze is clicked
     let currentData = null;
 
+    // when you click "Get Location" button
     locationBtn.addEventListener("click", () => {
+      // check if browser supports location
       if (!navigator.geolocation) {
         setStatus("Geolocation not supported.", true);
         return;
       }
       setStatus("Getting location...");
+      // try to get the user's location
       navigator.geolocation.getCurrentPosition(
         pos => {
+          // if success - put lat/lon in the inputs
           $("lat").value = pos.coords.latitude.toFixed(6);
           $("lon").value = pos.coords.longitude.toFixed(6);
           setStatus("Location captured.");
         },
+        // if error
         () => setStatus("Could not get location. Enter manually.", true),
         { enableHighAccuracy: true, timeout: 10000 }
       );
     });
 
+    // when you click "Analyze" button
     analyzeBtn.addEventListener("click", async () => {
+      // collect all the form data
       const payload = {
         lat: $("lat").value,
         lon: $("lon").value,
@@ -457,17 +544,19 @@
       geminiBox.style.display = "none";
 
       try {
+        // send the form data to the server for analysis
         const res = await fetch("/analyze", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
         const data = await res.json();
-        currentData = data;
-        renderResult(data);
-        geminiBtn.disabled = false;
+        currentData = data;  // save the result
+        renderResult(data);  // show the results on page
+        geminiBtn.disabled = false;  // enable AI button
         setStatus("Analysis complete.");
       } catch (e) {
+        // show error if something broke
         weatherEl.textContent = "Failed";
         locationEl.textContent = "Failed";
         setStatus("Analysis failed. Check connection.", true);
@@ -476,12 +565,14 @@
       setLoading(false);
     });
 
+    // when you click "Get AI Recommendation" button
     geminiBtn.addEventListener("click", async () => {
       if (!currentData) return;
       geminiBtn.disabled = true;
       geminiBtn.textContent = " Analyzing...";
 
       try {
+        // send data to AI to get recommendation
         const res = await fetch("/gemini_summary", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -503,11 +594,13 @@
           })
         });
         const result = await res.json();
+        // show the AI box with results
         geminiBox.style.display = "block";
         bestCropEl.textContent = result.best_crop ? `Best: ${titleCase(result.best_crop)}` : "";
         bestCropEl.style.display = result.best_crop ? "inline-block" : "none";
         summaryEl.innerHTML = (result.summary || "No summary available.").replace(/\n/g, "<br>");
       } catch (e) {
+        // show error in AI box
         geminiBox.style.display = "block";
         bestCropEl.style.display = "none";
         summaryEl.textContent = "Failed to get AI summary.";
@@ -517,17 +610,21 @@
       geminiBtn.textContent = "Get AI Recommendation";
     });
 
+    // display the results from analyze
     function renderResult(data) {
       const w = data.weather || {};
       const loc = data.location || {};
+      // show weather info
       weatherEl.textContent = `${ fmt(w.temperature) }°C, ${ fmt(w.humidity) }% hum, ${ fmt(w.rainfall || 0) }mm rain`;
+      // show location
       locationEl.textContent = [loc.district, loc.state].filter(Boolean).join(", ") || "Unknown";
 
-      cropsEl.innerHTML = "";
+      cropsEl.innerHTML = "";  // clear old list
       const crops = data.crops || [];
       if (!crops.length) {
         cropsEl.innerHTML = "<li class='crop-item'>No crops found.</li>";
       } else {
+        // loop through crops and add them to list
         for (const crop of crops) {
           const li = document.createElement("li");
           li.className = "crop-item";
@@ -542,26 +639,31 @@
         }
       }
 
+      // show the price chart
       if (data.chart_url) {
         chartEl.src = data.chart_url;
         chartEl.style.display = "block";
       }
     }
 
+    // show status messages
     function setStatus(msg, isError = false) {
       statusEl.textContent = msg;
       statusEl.className = isError ? "status error" : "status";
     }
 
+    // disable/enable analyze button while waiting
     function setLoading(on) {
       analyzeBtn.disabled = on;
       analyzeBtn.textContent = on ? "Analyzing..." : "Analyze";
     }
 
+    // convert null/undefined to "N/A"
     function fmt(v) {
       return v === null || v === undefined ? "N/A" : v;
     }
 
+    // make text look like "Title Case"
     function titleCase(s) {
       return String(s || "").replace(/\b\w/g, c => c.toUpperCase());
     }
