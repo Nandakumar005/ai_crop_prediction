@@ -5,12 +5,12 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 BASE_PRICES = {
-    "rice": 2500, "maize": 2000, "jute": 4000, "cotton": 6000,
-    "coconut": 3000, "papaya": 2000, "orange": 4000, "apple": 8000,
-    "muskmelon": 2000, "watermelon": 1500, "grapes": 6000, "mango": 4000,
-    "banana": 1500, "pomegranate": 8000, "lentil": 6000, "blackgram": 7000,
-    "mungbean": 7500, "mothbeans": 6000, "pigeonpeas": 7000,
-    "kidneybeans": 8000, "chickpea": 5500, "coffee": 15000,
+    "rice": 2500, "maize": 2400, "jute": 5600, "cotton": 7700,
+    "coconut": 3500, "papaya": 2500, "orange": 4500, "apple": 18000,
+    "muskmelon": 2500, "watermelon": 1500, "grapes": 6000, "mango": 6000,
+    "banana": 1800, "pomegranate": 12000, "lentil": 7000, "blackgram": 7800,
+    "mungbean": 6500, "mothbeans": 6500, "pigeonpeas": 8000,
+    "kidneybeans": 9500, "chickpea": 5800, "coffee": 22000,
 }
 
 CROP_MAPPING = {
@@ -29,7 +29,7 @@ CROP_MAPPING = {
 
 API_URL = "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070"
 
-def get_live_market_data(crops, state=None, days=7):
+def get_live_market_data(crops, state=None, days=2):
     load_dotenv()
     api_key = os.getenv("MARKET_API_KEY")
 
@@ -41,10 +41,10 @@ def get_live_market_data(crops, state=None, days=7):
             params = {
                 "api-key": api_key,
                 "format": "json",
-                "limit": 1000
+                "limit": 10
             }
 
-            response = requests.get(API_URL, params=params, timeout=5)
+            response = requests.get(API_URL, params=params, timeout=10)
 
             if response.status_code == 200:
                 data = response.json().get("records", [])
